@@ -2,6 +2,7 @@
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from typing import List, Dict, Any, Union
+from fastapi.middleware.cors import CORSMiddleware
 
 import database
 import llm_service
@@ -9,6 +10,21 @@ import llm_service
 app = FastAPI(
     title="PostgreSQL RAG API with Gemini",
     description="API to query a PostgreSQL database using natural language via Gemini LLM."
+)
+
+# --- CORS Configuration ---
+origins = [
+    "http://localhost:5173", # Your React app's default address
+    "http://127.0.0.1:5173",
+    # Add any other origins where your frontend might be hosted
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"], # Allows all headers
 )
 
 # Global variable to store DB schema to avoid fetching on every request
